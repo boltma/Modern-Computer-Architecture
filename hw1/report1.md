@@ -86,7 +86,7 @@ Exiting @ tick 128903000 because exiting with last active thread context
 
 可通过`m5out`中输出的`config.dot`检查处理器的架构正确配置（例如没有缺少L2缓存）。
 
-![config.dot](img/1/config.dot.svg)
+![config.dot](img/config.dot.svg)
 
 ### 2.2 仿真程序的参数设置
 
@@ -246,7 +246,7 @@ configs/example/se.py \
 
 执行`./util/minorview.py ./m5out/minor.log`可打开流水线的可视化，如下所示。
 
-![minorview](img/1/minorview.png)
+![minorview](img/minorview.png)
 
 Minor处理器共有四级流水，每一级的名称和作用如下表所示。
 
@@ -284,7 +284,7 @@ echo $i $SimSeconds >> $Log
 
 这里脚本中的`CPUtype`变量需要手动编辑以仿真相应的CPU类型，需要分别设为`MinorCPU`与`TimingSimpleCPU`并运行脚本以仿真两种CPU。同时编写`sim_freq_plot.py`脚本进行作图，结果如下所示。
 
-![sim_freq](img/1/sim_freq.png)
+![sim_freq](img/sim_freq.png)
 
 随着频率增长，处理器运行时间减少，但减少的趋势变缓。从1GHz到3GHz，Timing Simple CPU运行时间从178μs减少到84μs，减少52.8%；Minor CPU运行时间从129μs减少到68μs，减少47.3%。运行时间减少趋势变缓，主要在于除CPU外，系统其它部分（L2 Cache与主存）性能未能跟上，cache miss造成的延时对应的周期数增大。观察Minor CPU的`stats.txt`可发现，用`systems.cpu.numCycles`减`systems.cpu.idleCycles`的值，即CPU处在运行状态的周期数大致不变，但CPU处在空闲等待的周期数不断增加，应是在等待数据，这也造成CPI增加，使得性能提升不如时钟频率的提升。另外，观察两种CPU的`stats.txt`也发现，各级缓存对应的`overall_miss_latency`不断增加，符合推测。
 
