@@ -224,7 +224,7 @@ O3 CPU预测错误8次（总共20006次预测，见`system.cpu.branchPred.condPr
 
 仿照前次项目的脚本，编写所附的`sim_cache.sh`和`sim_cache_plot.py`，得到L1 Cache大小和IPC之间的关系如下图所示。
 
-![Cache](/home/mxy/workspace/Modern-Computer-Architecture/hw2/img/sim_cache.png)
+![Cache](img/sim_cache.png)
 
 这里分别仿真了L1 Data Cache或L1 Instruction Cache在另一者固定为8kB时，从1kB到1MB变化时的IPC。每一种类型的CPU两条曲线在8kB处相交。显然地，Instruction Cache对IPC几乎没有影响，这是因为在执行循环代码时，使用的代码只有不到10条，因此占用的Cache很小。而提升Data Cache的容量在Data Cache超过128kB时几乎没有作用。这是因为整段代码访问存储器的是数组`X[N]`和`Y[N]`，共10000\*4\*2=78kB。当Cache大小超过这个数目时，由于先前已经访问过两个数组，因此在感兴趣代码中，数组所有内容都在L1缓存中，缓存大小不再影响性能。同时，当缓存低于16kB时，由于两个数组大部分内容均不在L1 Cache中，因此几乎所有的内容都要重新取到L1 Cache中，但由于每次都会取一整个block，因此Cache miss率也会保持较低（默认每个block 64字节，因此能存16个32位整数，miss rate会低于1/16），从而CPI也几乎没有变化。总体而言，保持L1 Cache的大小在32kB至128kB范围内较为适应该程序的运行。
 
@@ -267,7 +267,7 @@ O3 CPU预测错误8次（总共20006次预测，见`system.cpu.branchPred.condPr
 
 流水线式除法器IPC为0.076236，执行349μs；而高速除法器IPC为0.080775，执行330μs。这符合理论分析，高速除法器更优。
 
-而对于O3 CPU，只能选择高速除法器，是一个不合理的情况。因为O3 CPU才能真正有效利用流水线式的CPU的优势。同时，`configs/hw2/cpu.py`中，O3 CPU并没有关于issue latency的设置。这时的高速除法器是一个真正高速的除法器（每个周期执行一条指令，且没有issue延时），也是一个不合理的事情。
+而对于O3 CPU，只能选择高速除法器，是一个不合理的情况。因为O3 CPU才能真正有效利用流水线式的CPU的优势。同时，`configs/hw2/cpu.py`中，O3 CPU并没有关于issue latency的设置。这时的高速除法器是一个真正高速的除法器（每个周期执行一条指令，且没有issue延时），也是一个不合理的事情。同时将`configs/hw2/run.py`中的`system.clk_domain.clock`换为1GHz。
 
 由于无法进行仿真（O3 CPU没有issue延时设置），因此进行一些简单的理论分析。如果issue延时是10，那表明每10个周期才能issue一个除法指令。而先前分析过，共执行约70000个除法指令，至少要70万个周期，在1GHz下，至少执行700μs，比先前的两个处理器还慢（主要是较低的主频）。
 
