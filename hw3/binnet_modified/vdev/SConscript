@@ -1,0 +1,10 @@
+Import('*')
+
+Source('./binnet/ai_chip.cpp')
+Source('./binnet/core.cpp')
+Source('./binnet/memhub.cpp')
+Source('./binnet/memory.cpp')
+Source('vdev.cc')
+SimObject('VirtualDevice.py')
+
+DebugFlag('VirtualDevice')
